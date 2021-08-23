@@ -7,7 +7,7 @@ import DateTimePicker from 'react-datetime-picker';
 import Swal from 'sweetalert2';
 
 import { uiCloseModal } from '../../actions/ui';
-import { eventAddNew, eventClearActive, eventUpdated } from '../../actions/events';
+import { eventClearActive, eventStartAddNew, eventStartUpdate } from '../../actions/events';
 
 
 const customStyles = {
@@ -22,7 +22,7 @@ const customStyles = {
 };
 Modal.setAppElement('#root');
 
-const now = moment().minutes(0).seconds(0).add(1,'hours'); // 3:00:00
+const now = moment().minutes(0).seconds(0).add(1,'hours');
 const nowPlus1 = now.clone().add(1, 'hours');
 
 const initEvent = {
@@ -39,8 +39,6 @@ const CalendarModal = () => {
     const { activeEvent } = useSelector( state => state.calendar );
     const dispatch = useDispatch();
 
-    const [ dateStart, setDateStart ] = useState( now.toDate() );
-    const [ dateEnd, setDateEnd ] = useState( nowPlus1.toDate() );
     const [ titleValid, setTitleValid ] = useState(true);
     
     const [ formValues, setFormValues ] = useState( initEvent );
@@ -74,7 +72,6 @@ const CalendarModal = () => {
     }
 
     const handleStartDateChange = (e) => {
-        setDateStart(e);
         setFormValues({
             ...formValues,
             start: e
@@ -82,7 +79,6 @@ const CalendarModal = () => {
     }
     
     const handleEndDateChange = (e) => {
-        setDateEnd(e);
         setFormValues({
             ...formValues,
             end: e
@@ -104,16 +100,9 @@ const CalendarModal = () => {
         }
 
         if (activeEvent) {
-            dispatch(eventUpdated(formValues))
+            dispatch(eventStartUpdate(formValues))
         } else {
-            dispatch(eventAddNew({
-                ...formValues,
-                id: new Date().getTime(),
-                user: {
-                    _id: '123',
-                    name: 'Fernando'
-                }
-            }));
+            dispatch(eventStartAddNew(formValues));
         }
 
 
@@ -143,7 +132,7 @@ const CalendarModal = () => {
                     <label>Fecha y hora inicio</label>
                     <DateTimePicker
                         onChange={ handleStartDateChange }
-                        value={ dateStart }
+                        value={ start }
                         className="form-control"
                     />
                 </div>
@@ -152,8 +141,8 @@ const CalendarModal = () => {
                     <label>Fecha y hora fin</label>
                     <DateTimePicker
                         onChange={ handleEndDateChange }
-                        value={ dateEnd }
-                        minDate={ dateStart }
+                        value={ end }
+                        minDate={ start }
                         className="form-control"
                     />
                 </div>

@@ -11,5 +11,7 @@ La aplicación implementa lo siguiente:
 - CRUD local
 - Uso de MomentJS
 - Manejo de fechas
+- Uso de Redux
+- Autenticación de usuario con Jwt
 
 Recuerden instalar los modulos de node con `npm install`.
